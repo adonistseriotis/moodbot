@@ -38,15 +38,21 @@ const getStatusBadge = (status: ToolUIPart['state']) => {
   const labels = {
     'input-streaming': 'Pending',
     'input-available': 'Running',
+    'approval-requested': 'Approval Requested',
+    'approval-responded': 'Approval Responded',
     'output-available': 'Completed',
     'output-error': 'Error',
+    'output-denied': 'Denied',
   } as const;
 
   const icons = {
     'input-streaming': <CircleIcon className="size-4" />,
     'input-available': <ClockIcon className="size-4 animate-pulse" />,
+    'approval-requested': <ClockIcon className="size-4 animate-pulse" />,
+    'approval-responded': <CheckCircleIcon className="size-4 text-green-600" />,
     'output-available': <CheckCircleIcon className="size-4 text-green-600" />,
     'output-error': <XCircleIcon className="size-4 text-red-600" />,
+    'output-denied': <XCircleIcon className="size-4 text-red-600" />,
   } as const;
 
   return (
@@ -96,7 +102,10 @@ export type ToolInputProps = ComponentProps<'div'> & {
 };
 
 export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
-  <div className={cn('space-y-2 overflow-hidden p-4', className)} {...(props as any)}>
+  <div
+    className={cn('space-y-2 overflow-hidden p-4', className)}
+    {...(props as any)}
+  >
     <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
       Parameters
     </h4>
