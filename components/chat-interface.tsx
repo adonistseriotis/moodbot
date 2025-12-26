@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Response } from '@/components/ui/shadcn-io/ai/response';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +19,14 @@ export function ChatInterface() {
   const [suggestedQueries, setSuggestedQueries] = useState<string[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // latest user prompt callback
+  const latestPrompt = useMemo(() => {
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((msg) => msg.role === 'user');
+    return lastUserMessage ? lastUserMessage.content[0]?.text || '' : '';
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -152,8 +160,13 @@ export function ChatInterface() {
           <div className="mt-6">
             <h3 className="mb-4 text-lg font-semibold">Events</h3>
             <div className="flex flex-row overflow-x-auto gap-4">
-              {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+              {events.map((event, idx) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  latestPrompt={latestPrompt}
+                  position={idx}
+                />
               ))}
             </div>
           </div>

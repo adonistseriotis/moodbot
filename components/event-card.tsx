@@ -1,19 +1,22 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin } from "lucide-react";
-import type { Event } from "@/lib/types";
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, MapPin } from 'lucide-react';
+import type { Event } from '@/lib/types';
+import Link from 'next/link';
 
 interface EventCardProps {
   event: Event;
+  latestPrompt?: string;
+  position: number;
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, latestPrompt, position }: EventCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
@@ -23,7 +26,7 @@ export function EventCard({ event }: EventCardProps) {
       {event.media.photos.length > 0 && (
         <div className="relative aspect-video w-full overflow-hidden bg-muted">
           <img
-            src={event.media.photos[0].url || "/placeholder.svg"}
+            src={event.media.photos[0].url || '/placeholder.svg'}
             alt={event.name}
             className="h-full w-full object-cover"
           />
@@ -37,9 +40,15 @@ export function EventCard({ event }: EventCardProps) {
         </Badge>
 
         {/* Event Name */}
-        <h3 className="mb-2 text-lg font-semibold text-foreground">
-          {event.name}
-        </h3>
+        <Link
+          href={`https://events.musicofourdesire.com/event/${event.id}?utm_source=moodbot&utm_medium=chat&utm_campaign=${encodeURIComponent(latestPrompt || 'unknown')}&utm_term=${encodeURIComponent(position.toString())}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
+            {event.name}
+          </h3>
+        </Link>
 
         {/* About */}
         {event.about && (
